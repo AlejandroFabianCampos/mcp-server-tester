@@ -1,11 +1,11 @@
 import { Anthropic } from '@anthropic-ai/sdk';
-import { Claude } from '../llm/Claude';
 import { v4 as uuidv4 } from 'uuid';
-import { 
-  TestGeneratorInterface,
-  ToolDefinition,
+import { Claude } from '../llm/Claude';
+import {
   TestCase,
-  TesterConfig
+  TesterConfig,
+  TestGeneratorInterface,
+  ToolDefinition
 } from '../types';
 
 /**
@@ -38,15 +38,23 @@ export class TestGenerator implements TestGeneratorInterface {
       try {
         console.log(`Generating tests for tool: ${tool.name}`);
         const prompt = this.createPrompt(tool, testsPerTool);
-        
-        const response = await this.anthropic.completions.create({
+
+
+        const response = await this.anthropic.messages.create({
           model: this.model,
-          max_tokens_to_sample: 4000,
-          prompt: `\n\nHuman: ${prompt}\n\nAssistant:`,
-          temperature: 0.7
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            },
+          ],
+          max_tokens: 4000,
+          temperature: 0.7,
         });
 
-        const testCases = this.parseResponse(response.completion, tool.name);
+        const decoded_response = response.content[0].type === 'text' ? response.content[0].text : '';
+
+        const testCases = this.parseResponse(decoded_response, tool.name);
 
         // Populate natural language query for each test case
         for (const testCase of testCases) {

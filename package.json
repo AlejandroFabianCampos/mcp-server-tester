@@ -14,7 +14,7 @@
     "mcp-server-tester": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && shx chmod +x dist/*.js",
     "start": "NODE_NO_WARNINGS=1 node dist/index.js",
     "dev": "NODE_NO_WARNINGS=1 ts-node src/index.ts",
     "test": "jest",
@@ -31,7 +31,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0",
+    "@anthropic-ai/sdk": "^0.55.0",
     "@modelcontextprotocol/sdk": "^1.8.0",
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
@@ -47,7 +47,8 @@
     "typescript": "^5.3.2",
     "eslint": "^9.0.0",
     "@typescript-eslint/parser": "^7.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0"
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "shx": "^0.4.0"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -20,14 +20,25 @@ export class Claude {
     const prompt = `You are a user who wants to call the following tool. Provide a single sentence describing the request in natural language.\n\nName: ${tool.name}\nDescription: ${tool.description}\nParameters: ${JSON.stringify(tool.inputSchema?.properties ?? {}, null, 2)}`;
 
     try {
-      const response = await this.anthropic.completions.create({
+
+      const response = await this.anthropic.messages.create({
         model: this.model,
-        max_tokens_to_sample: 100,
-        prompt: `\n\nHuman: ${prompt}\n\nAssistant:`,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          },
+        ],
+        max_tokens: 100,
         temperature: 0.7
       });
 
-      return response.completion.trim();
+
+      if (response.content[0].type === 'text') {
+        return response.content[0].text.trim();
+      } else {
+        return '';
+      }
     } catch (err) {
       console.error('Failed to generate natural language query:', err);
       return '';

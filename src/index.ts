@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import path from 'path';
-import fs from 'fs';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { CompleteConfig, ConfigLoader, DEFAULT_CONFIG_FILENAME } from './client/ConfigLoader';
 import { MCPClient } from './client/MCPClient';
-import { ConfigLoader, DEFAULT_CONFIG_FILENAME, CompleteConfig } from './client/ConfigLoader';
-import { TestGenerator } from './test-generator/TestGenerator';
-import { ResponseValidator } from './validator/ResponseValidator';
 import { Reporter } from './reporter/Reporter';
+import { TestGenerator } from './test-generator/TestGenerator';
 import { TesterConfig, TestResult } from './types';
+import { ResponseValidator } from './validator/ResponseValidator';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -306,6 +306,7 @@ async function runTests() {
         console.error('Error disconnecting from server:', error);
       }
     }
+    process.exit(0);
   }
 }
 

@@ -1,7 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { ConfigLoader } from './ConfigLoader';
 import { ToolResponse } from '../types';
+import { ConfigLoader } from './ConfigLoader';
 
 /**
  * Client for interacting with MCP servers
@@ -35,7 +35,7 @@ export class MCPClient {
         command: serverConfig.command,
         args: serverConfig.args,
         env: {
-          ...process.env,
+          ...process.env as Record<string, string>,
           ...serverConfig.env
         }
       });
