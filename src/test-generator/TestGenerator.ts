@@ -31,14 +31,13 @@ export class TestGenerator implements TestGeneratorInterface {
    * @param config Tester configuration
    */
   async generateTests(tools: ToolDefinition[], config: TesterConfig): Promise<TestCase[]> {
-    const allTests: TestCase[] = [];
     const testsPerTool = config.numTestsPerTool || 3;
 
-    for (const tool of tools) {
+    // Generate tests for all tools in parallel
+    const testPromises = tools.map(async (tool) => {
       try {
         console.log(`Generating tests for tool: ${tool.name}`);
         const prompt = this.createPrompt(tool, testsPerTool);
-
 
         const response = await this.anthropic.messages.create({
           model: this.model,
@@ -66,13 +65,19 @@ export class TestGenerator implements TestGeneratorInterface {
           }
         }
 
-        allTests.push(...testCases);
-        
         console.log(`Generated ${testCases.length} tests for ${tool.name}`);
+        return testCases;
       } catch (error) {
         console.error(`Error generating tests for tool ${tool.name}:`, error);
+        return []; // Return empty array for failed tools
       }
-    }
+    });
+
+    // Wait for all test generation to complete
+    const allTestResults = await Promise.all(testPromises);
+    
+    // Flatten all test results into a single array
+    const allTests: TestCase[] = allTestResults.flat();
 
     return allTests;
   }

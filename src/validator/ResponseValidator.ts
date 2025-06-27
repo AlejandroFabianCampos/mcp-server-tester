@@ -1,9 +1,8 @@
-import { 
-  ResponseValidatorInterface, 
-  TestCase, 
-  ToolResponse, 
-  ValidationResult,
-  ValidationRule
+import {
+  ResponseValidatorInterface,
+  TestCase,
+  ToolResponse,
+  ValidationResult
 } from '../types';
 
 /**
@@ -64,8 +63,8 @@ export class ResponseValidator implements ResponseValidatorInterface {
    * @returns Array of error messages
    */
   private validateRules(data: any, rules: any[]): string[] {
+    data = JSON.parse(data.content[0].text);
     const errors: string[] = [];
-    
     for (const rule of rules) {
       switch (rule.type) {
         case 'contains':
